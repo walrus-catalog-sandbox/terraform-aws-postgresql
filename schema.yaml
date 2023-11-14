@@ -1,0 +1,167 @@
+openapi: 3.0.3
+info:
+  title: OpenAPI schema for template terraform-aws-rds-postgresql
+components:
+  schemas:
+    variables:
+      required:
+      - infrastructure
+      type: object
+      properties:
+        context:
+          title: Context
+          type: object
+          description: |
+            Receive contextual information. When Walrus deploys, Walrus will inject specific contextual information into this field.
+
+            Examples:
+            ```
+            context:
+              project:
+                name: string
+                id: string
+              environment:
+                name: string
+                id: string
+              resource:
+                name: string
+                id: string
+            ```
+          default: {}
+          additionalProperties:
+            type: object
+          x-walrus-ui:
+            group: Basic
+            hidden: true
+        infrastructure:
+          title: Infrastructure
+          type: object
+          description: |
+            Specify the infrastructure information for deploying.
+
+            Examples:
+            ```
+            infrastructure:
+              vpc_id: string                  # the ID of the VPC where the PostgreSQL service applies
+              kms_key_id: sting,optional      # the ID of the KMS key which to encrypt the PostgreSQL data
+              domain_suffix: string           # a private DNS namespace of the CloudMap where to register the applied PostgreSQL service
+            ```
+          required:
+          - domain_suffix
+          - vpc_id
+          properties:
+            domain_suffix:
+              title: Domain Suffix
+              type: string
+            kms_key_id:
+              title: Kms Key Id
+              type: string
+            vpc_id:
+              title: Vpc Id
+              type: string
+          x-walrus-ui:
+            group: Basic
+        architecture:
+          title: Architecture
+          type: string
+          description: |
+            Specify the deployment architecture, select from standalone or replication.
+          default: standalone
+          x-walrus-ui:
+            group: Basic
+        engine_version:
+          title: Engine Version
+          type: string
+          description: |
+            Specify the deployment engine version, select from https://docs.aws.amazon.com/AmazonRDS/latest/PostgreSQLReleaseNotes/postgresql-release-calendar.html#Release.Calendar.
+          default: "13"
+          enum:
+          - "13"
+          - "14"
+          - "15"
+          x-walrus-ui:
+            group: Basic
+        engine_parameters:
+          title: Engine Parameters
+          type: array
+          description: |
+            Specify the deployment engine parameters, select for https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.PostgreSQL.CommonDBATasks.Parameters.html.
+          items:
+            properties:
+              name:
+                title: Name
+                type: string
+              value:
+                title: Value
+                type: string
+            required:
+            - name
+            - value
+            type: object
+          x-walrus-ui:
+            group: Basic
+        database:
+          title: Database
+          type: string
+          description: |
+            Specify the database name.
+          default: mydb
+          x-walrus-ui:
+            group: Basic
+        username:
+          title: Username
+          type: string
+          description: |
+            Specify the account username.
+          default: rdsuser
+          x-walrus-ui:
+            group: Basic
+        password:
+          title: Password
+          type: string
+          description: |
+            Specify the account password, ref to https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Limits.html#RDS_Limits.Constraints.
+          writeOnly: true
+          x-walrus-ui:
+            group: Basic
+        resources:
+          title: Resources
+          type: object
+          description: |
+            Specify the computing resources.
+
+            Examples:
+            ```
+            resources:
+              class: string, optional         # https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html#Concepts.DBInstanceClass.Summary
+            ```
+          properties:
+            class:
+              default: db.t3.medium
+              title: Class
+              type: string
+          x-walrus-ui:
+            group: Basic
+        storage:
+          title: Storage
+          type: object
+          description: |
+            Specify the storage resources.
+
+            Examples:
+            ```
+            storage:
+              class: string, optional        # https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html
+              size: number, optional         # in megabyte
+            ```
+          properties:
+            class:
+              default: gp2
+              title: Class
+              type: string
+            size:
+              default: 20480
+              title: Size
+              type: number
+          x-walrus-ui:
+            group: Basic
