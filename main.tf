@@ -55,6 +55,13 @@ data "aws_kms_key" "selected" {
   count = var.infrastructure.kms_key_id != null ? 1 : 0
 
   key_id = var.infrastructure.kms_key_id
+
+  lifecycle {
+    postcondition {
+      condition     = self.enabled
+      error_message = "KMS key needs to be enabled"
+    }
+  }
 }
 
 data "aws_service_discovery_dns_namespace" "selected" {
@@ -169,7 +176,6 @@ resource "aws_db_instance" "primary" {
   db_name              = coalesce(var.database, "mydb")
   username             = coalesce(var.username, "user")
   password             = local.password
-
 
   instance_class    = try(var.resources.class, "db.t3.medium")
   storage_type      = try(var.storage.class, "gp2")
