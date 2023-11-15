@@ -85,7 +85,8 @@ module "this" {
     domain_suffix = aws_service_discovery_private_dns_namespace.example.name
   }
 
-  architecture = "replication"
+  architecture                  = "replication"
+  replication_readonly_replicas = 2
 
   depends_on = [aws_service_discovery_private_dns_namespace.example]
 }

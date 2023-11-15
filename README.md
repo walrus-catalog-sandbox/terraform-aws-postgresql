@@ -2,7 +2,7 @@
 
 Terraform module which deploys [PostgreSQL](https://aws.amazon.com/rds/postgresql) service on AWS.
 
-- [x] Support standalone and replication(for high availability).
+- [x] Support standalone(one read-write instance) and replication(one read-write instance and multiple read-only instances, for read write splitting).
 
 ## Usage
 
@@ -77,6 +77,7 @@ No modules.
 | <a name="input_context"></a> [context](#input\_context) | Receive contextual information. When Walrus deploys, Walrus will inject specific contextual information into this field.<br><br>Examples:<pre>context:<br>  project:<br>    name: string<br>    id: string<br>  environment:<br>    name: string<br>    id: string<br>  resource:<br>    name: string<br>    id: string</pre> | `map(any)` | `{}` | no |
 | <a name="input_infrastructure"></a> [infrastructure](#input\_infrastructure) | Specify the infrastructure information for deploying.<br><br>Examples:<pre>infrastructure:<br>  vpc_id: string                  # the ID of the VPC where the PostgreSQL service applies<br>  kms_key_id: sting,optional      # the ID of the KMS key which to encrypt the PostgreSQL data<br>  domain_suffix: string           # a private DNS namespace of the CloudMap where to register the applied PostgreSQL service</pre> | <pre>object({<br>    vpc_id        = string<br>    kms_key_id    = optional(string)<br>    domain_suffix = string<br>  })</pre> | n/a | yes |
 | <a name="input_architecture"></a> [architecture](#input\_architecture) | Specify the deployment architecture, select from standalone or replication. | `string` | `"standalone"` | no |
+| <a name="input_replication_readonly_replicas"></a> [replication\_readonly\_replicas](#input\_replication\_readonly\_replicas) | Specify the number of read-only replicas under the replication deployment. | `number` | `1` | no |
 | <a name="input_engine_version"></a> [engine\_version](#input\_engine\_version) | Specify the deployment engine version, select from https://docs.aws.amazon.com/AmazonRDS/latest/PostgreSQLReleaseNotes/postgresql-release-calendar.html#Release.Calendar. | `string` | `"13"` | no |
 | <a name="input_engine_parameters"></a> [engine\_parameters](#input\_engine\_parameters) | Specify the deployment engine parameters, select for https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.PostgreSQL.CommonDBATasks.Parameters.html. | <pre>list(object({<br>    name  = string<br>    value = string<br>  }))</pre> | `null` | no |
 | <a name="input_database"></a> [database](#input\_database) | Specify the database name. | `string` | `"mydb"` | no |

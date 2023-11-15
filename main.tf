@@ -200,11 +200,11 @@ resource "aws_db_instance" "primary" {
 # create secondary instance.
 
 resource "aws_db_instance" "secondary" {
-  count = local.architecture == "replication" ? 1 : 0
+  count = local.architecture == "replication" ? coalesce(var.replication_readonly_replicas, 1) : 0
 
   replicate_source_db = aws_db_instance.primary.arn
 
-  identifier             = join("-", [local.fullname, "secondary"])
+  identifier             = join("-", [local.fullname, "secondary", tostring(count.index)])
   tags                   = local.tags
   multi_az               = true
   db_subnet_group_name   = aws_db_instance.primary.db_subnet_group_name
@@ -269,12 +269,12 @@ resource "aws_service_discovery_service" "secondary" {
 }
 
 resource "aws_service_discovery_instance" "secondary" {
-  count = local.architecture == "replication" ? 1 : 0
+  count = local.architecture == "replication" ? coalesce(var.replication_readonly_replicas, 1) : 0
 
-  instance_id = aws_db_instance.secondary[0].identifier
+  instance_id = aws_db_instance.secondary[count.index].identifier
   service_id  = aws_service_discovery_service.secondary[0].id
 
   attributes = {
-    AWS_INSTANCE_CNAME = aws_db_instance.secondary[0].address
+    AWS_INSTANCE_CNAME = aws_db_instance.secondary[count.index].address
   }
 }
