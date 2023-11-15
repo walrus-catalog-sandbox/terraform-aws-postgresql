@@ -19,7 +19,7 @@ output "endpoint_internal_readonly" {
   description = "The internal readonly endpoints, a string list, which are used for internal readonly access."
   value = local.architecture == "replication" ? [
     format("%s.%s:5432", aws_service_discovery_service.secondary[0].name, var.infrastructure.domain_suffix)
-  ] : null
+  ] : []
 }
 
 output "database" {
