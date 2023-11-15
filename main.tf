@@ -173,7 +173,7 @@ resource "aws_db_instance" "primary" {
 
   instance_class    = try(var.resources.class, "db.t3.medium")
   storage_type      = try(var.storage.class, "gp2")
-  allocated_storage = try(var.storage.size / 1024, 10)
+  allocated_storage = try(var.storage.size / 1024, 20)
   storage_encrypted = try(data.aws_kms_key.selected[0].arn != null, false) #tfsec:ignore:aws-rds-encrypt-instance-storage-data
   kms_key_id        = try(data.aws_kms_key.selected[0].arn, null)
 
