@@ -237,7 +237,7 @@ resource "aws_service_discovery_service" "primary" {
     namespace_id   = data.aws_service_discovery_dns_namespace.selected.id
     routing_policy = "WEIGHTED"
     dns_records {
-      ttl  = 10
+      ttl  = 30
       type = "CNAME"
     }
   }
@@ -262,7 +262,7 @@ resource "aws_service_discovery_service" "secondary" {
     namespace_id   = data.aws_service_discovery_dns_namespace.selected.id
     routing_policy = "WEIGHTED"
     dns_records {
-      ttl  = 10
+      ttl  = 30
       type = "CNAME"
     }
   }
