@@ -7,7 +7,6 @@ Deploy PostgreSQL service in replication architecture by root moudle.
 $ tf apply -auto-approve \
   -target=aws_vpc.example \
   -target=aws_subnet.example \
-  -target=aws_kms_key.example \
   -target=aws_service_discovery_private_dns_namespace.example
 
 # create service
