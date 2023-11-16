@@ -73,7 +73,7 @@ module "this" {
   }
 
   architecture                  = "replication"
-  replication_readonly_replicas = 2
+  replication_readonly_replicas = 3
 
   depends_on = [aws_service_discovery_private_dns_namespace.example]
 }
