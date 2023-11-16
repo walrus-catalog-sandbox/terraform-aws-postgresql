@@ -55,18 +55,6 @@ resource "aws_subnet" "example" {
 #   gateway_id             = aws_internet_gateway.example.id
 # }
 
-# create kms key.
-
-resource "aws_kms_key" "example" {
-  key_usage                = "ENCRYPT_DECRYPT"
-  customer_master_key_spec = "SYMMETRIC_DEFAULT"
-  deletion_window_in_days  = 7
-  is_enabled               = true
-  enable_key_rotation      = false
-  multi_region             = true
-  description              = "postgresql-encryption"
-}
-
 # create private dns.
 
 resource "aws_service_discovery_private_dns_namespace" "example" {
@@ -81,7 +69,6 @@ module "this" {
 
   infrastructure = {
     vpc_id        = aws_vpc.example.id
-    kms_key_id    = aws_kms_key.example.id
     domain_suffix = aws_service_discovery_private_dns_namespace.example.name
   }
 
