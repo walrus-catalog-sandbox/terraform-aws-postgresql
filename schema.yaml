@@ -30,9 +30,13 @@ components:
           default: {}
           additionalProperties:
             type: object
+            x-walrus-ui:
+              colSpan: 12
           x-walrus-ui:
+            colSpan: 12
             group: Basic
             hidden: true
+            order: 1
         infrastructure:
           title: Infrastructure
           type: object
@@ -60,7 +64,9 @@ components:
               title: Vpc Id
               type: string
           x-walrus-ui:
+            colSpan: 12
             group: Basic
+            order: 2
         architecture:
           title: Architecture
           type: string
@@ -72,6 +78,7 @@ components:
           - replication
           x-walrus-ui:
             group: Basic
+            order: 3
         replication_readonly_replicas:
           title: Replication Readonly Replicas
           type: number
@@ -84,6 +91,7 @@ components:
           - 5
           x-walrus-ui:
             group: Basic
+            order: 4
             showIf: architecture=replication
         engine_version:
           title: Engine Version
@@ -97,6 +105,7 @@ components:
           - "15"
           x-walrus-ui:
             group: Basic
+            order: 5
         engine_parameters:
           title: Engine Parameters
           type: array
@@ -114,8 +123,13 @@ components:
             - name
             - value
             type: object
+            x-walrus-ui:
+              colSpan: 12
           x-walrus-ui:
+            colSpan: 12
             group: Basic
+            hidden: true
+            order: 6
         database:
           title: Database
           type: string
@@ -124,6 +138,7 @@ components:
           default: mydb
           x-walrus-ui:
             group: Basic
+            order: 7
         username:
           title: Username
           type: string
@@ -132,14 +147,17 @@ components:
           default: rdsuser
           x-walrus-ui:
             group: Basic
+            order: 8
         password:
           title: Password
           type: string
           description: |
             Specify the account password, ref to https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Limits.html#RDS_Limits.Constraints.
+          format: password
           writeOnly: true
           x-walrus-ui:
             group: Basic
+            order: 9
         resources:
           title: Resources
           type: object
@@ -151,13 +169,17 @@ components:
             resources:
               class: string, optional         # https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html#Concepts.DBInstanceClass.Summary
             ```
+          default:
+            class: db.t3.medium
           properties:
             class:
               default: db.t3.medium
               title: Class
               type: string
           x-walrus-ui:
+            colSpan: 12
             group: Basic
+            order: 10
         storage:
           title: Storage
           type: object
@@ -170,6 +192,9 @@ components:
               class: string, optional        # https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html
               size: number, optional         # in megabyte
             ```
+          default:
+            class: gp2
+            size: 20480
           properties:
             class:
               default: gp2
@@ -180,4 +205,6 @@ components:
               title: Size
               type: number
           x-walrus-ui:
+            colSpan: 12
             group: Basic
+            order: 11
