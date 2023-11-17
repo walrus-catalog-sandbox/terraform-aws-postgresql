@@ -57,12 +57,18 @@ components:
             domain_suffix:
               title: Domain Suffix
               type: string
+              x-walrus-ui:
+                order: 3
             kms_key_id:
               title: Kms Key Id
               type: string
+              x-walrus-ui:
+                order: 2
             vpc_id:
               title: Vpc Id
               type: string
+              x-walrus-ui:
+                order: 1
           x-walrus-ui:
             colSpan: 12
             group: Basic
@@ -200,10 +206,14 @@ components:
               default: gp2
               title: Class
               type: string
+              x-walrus-ui:
+                order: 1
             size:
               default: 20480
               title: Size
               type: number
+              x-walrus-ui:
+                order: 2
           x-walrus-ui:
             colSpan: 12
             group: Basic
