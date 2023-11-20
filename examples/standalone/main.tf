@@ -45,16 +45,6 @@ resource "aws_subnet" "example" {
   cidr_block        = each.value
 }
 
-# resource "aws_internet_gateway" "example" {
-#   vpc_id = aws_vpc.example.id
-# }
-
-# resource "aws_route" "example" {
-#   destination_cidr_block = "0.0.0.0/0"
-#   route_table_id         = aws_vpc.example.default_route_table_id
-#   gateway_id             = aws_internet_gateway.example.id
-# }
-
 # create kms key.
 
 resource "aws_kms_key" "example" {

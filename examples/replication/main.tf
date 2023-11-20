@@ -45,37 +45,17 @@ resource "aws_subnet" "example" {
   cidr_block        = each.value
 }
 
-# resource "aws_internet_gateway" "example" {
-#   vpc_id = aws_vpc.example.id
-# }
-
-# resource "aws_route" "example" {
-#   destination_cidr_block = "0.0.0.0/0"
-#   route_table_id         = aws_vpc.example.default_route_table_id
-#   gateway_id             = aws_internet_gateway.example.id
-# }
-
-# create private dns.
-
-resource "aws_service_discovery_private_dns_namespace" "example" {
-  name = "my-dev-dns"
-  vpc  = aws_vpc.example.id
-}
-
 # create postgresql service.
 
 module "this" {
   source = "../.."
 
   infrastructure = {
-    vpc_id        = aws_vpc.example.id
-    domain_suffix = aws_service_discovery_private_dns_namespace.example.name
+    vpc_id = aws_vpc.example.id
   }
 
   architecture                  = "replication"
   replication_readonly_replicas = 3
-
-  depends_on = [aws_service_discovery_private_dns_namespace.example]
 }
 
 output "context" {

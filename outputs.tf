@@ -10,12 +10,20 @@ output "selector" {
 
 output "endpoint_internal" {
   description = "The internal endpoints, a string list, which are used for internal access."
-  value       = [format("%s.%s:5432", aws_service_discovery_service.primary.name, var.infrastructure.domain_suffix)]
+  value = [
+    var.infrastructure.domain_suffix == null ?
+    format("%s:5432", aws_db_instance.primary.address) :
+    format("%s.%s:5432", aws_service_discovery_service.primary[0].name, var.infrastructure.domain_suffix)
+  ]
 }
 
 output "endpoint_internal_readonly" {
   description = "The internal readonly endpoints, a string list, which are used for internal readonly access."
-  value       = local.architecture == "replication" ? [format("%s.%s:5432", aws_service_discovery_service.secondary[0].name, var.infrastructure.domain_suffix)] : []
+  value = local.architecture == "replication" ? flatten([
+    var.infrastructure.domain_suffix == null ?
+    formatlist("%s:5432", aws_db_instance.secondary[*].address) :
+    format("%s.%s:5432", aws_service_discovery_service.secondary[0].name, var.infrastructure.domain_suffix)
+  ]) : []
 }
 
 output "database" {
