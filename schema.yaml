@@ -48,7 +48,7 @@ components:
             infrastructure:
               vpc_id: string                  # the ID of the VPC where the PostgreSQL service applies
               kms_key_id: sting,optional      # the ID of the KMS key which to encrypt the PostgreSQL data
-              domain_suffix: string           # a private DNS namespace of the CloudMap where to register the applied PostgreSQL service
+              domain_suffix: string,optional  # a private DNS namespace of the CloudMap where to register the applied PostgreSQL service
             ```
           required:
           - vpc_id
@@ -164,6 +164,7 @@ components:
           type: string
           description: |
             Specify the account password, ref to https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Limits.html#RDS_Limits.Constraints.
+            If not specified, it will generate a random password.
           format: password
           writeOnly: true
           x-walrus-ui:
