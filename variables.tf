@@ -80,9 +80,9 @@ variable "engine_version" {
 Specify the deployment engine version, select from https://docs.aws.amazon.com/AmazonRDS/latest/PostgreSQLReleaseNotes/postgresql-release-calendar.html#Release.Calendar.
 EOF
   type        = string
-  default     = "13"
+  default     = "15.0"
   validation {
-    condition     = contains(["13", "14", "15"], var.engine_version)
+    condition     = contains(["15.0", "14.0", "13.0"], var.engine_version)
     error_message = "Invalid version"
   }
 }
@@ -100,31 +100,35 @@ EOF
 
 variable "database" {
   description = <<-EOF
-Specify the database name.
+Specify the database name. The database name must be 2-64 characters long and start with any lower letter, combined with number, or symbols: - _.
+The database name cannot be PostgreSQL forbidden keyword.
 EOF
   type        = string
   default     = "mydb"
   validation {
-    condition     = var.database == null || can(regex("^[a-z][-a-z0-9_]{0,61}[a-z0-9]$", var.database))
+    condition     = can(regex("^[a-z][-a-z0-9_]{0,61}[a-z0-9]$", var.database))
     error_message = format("Invalid database: %s", var.database)
   }
 }
 
 variable "username" {
   description = <<-EOF
-Specify the account username.
+Specify the account username. The username must be 2-16 characters long and start with lower letter, combined with number, or symbol: _.
+The username cannot be PostgreSQL forbidden keyword.
 EOF
   type        = string
   default     = "rdsuser"
   validation {
-    condition     = can(regex("^[A-Za-z_]{0,15}[a-z0-9]$", var.username))
+    condition     = can(regex("^[a-z][a-z0-9_]{0,14}[a-z0-9]$", var.username))
     error_message = format("Invalid username: %s", var.username)
   }
 }
 
 variable "password" {
   description = <<-EOF
-Specify the account password, ref to https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Limits.html#RDS_Limits.Constraints.
+Specify the account password. The password must be 8-32 characters long and start with any letter, number, or symbols: ! # $ % ^ & * ( ) _ + - =.
+If not specified, it will generate a random password.
+See https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Limits.html#RDS_Limits.Constraints.
 EOF
   type        = string
   default     = null

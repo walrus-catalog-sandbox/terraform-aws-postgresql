@@ -107,7 +107,7 @@ locals {
 # create parameters group.
 
 locals {
-  version = coalesce(var.engine_version, "13")
+  version = coalesce(try(split(".", var.engine_version)[0], null), "15")
   parameters = merge(
     {
       synchronous_commit = "off"
