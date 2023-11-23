@@ -23,7 +23,7 @@ components:
               colSpan: 12
           x-walrus-ui:
             colSpan: 12
-            group: Basic
+            group: Advanced
             hidden: true
             order: 1
         infrastructure:
@@ -59,7 +59,7 @@ components:
                 order: 1
           x-walrus-ui:
             colSpan: 12
-            group: Basic
+            group: Advanced
             order: 2
         architecture:
           title: Architecture
@@ -107,6 +107,7 @@ components:
           description: |
             Specify the deployment engine parameters, select for https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.PostgreSQL.CommonDBATasks.Parameters.html.
           nullable: true
+          default: []
           items:
             properties:
               name:
@@ -138,7 +139,7 @@ components:
           minLength: 2
           x-walrus-ui:
             group: Basic
-            order: 7
+            order: 9
         username:
           title: Username
           type: string
@@ -151,7 +152,7 @@ components:
           minLength: 2
           x-walrus-ui:
             group: Basic
-            order: 8
+            order: 7
         password:
           title: Password
           type: string
@@ -166,7 +167,7 @@ components:
           writeOnly: true
           x-walrus-ui:
             group: Basic
-            order: 9
+            order: 8
         resources:
           title: Resources
           type: object
