@@ -95,7 +95,7 @@ EOF
     name  = string
     value = string
   }))
-  default = null
+  default = []
 }
 
 variable "database" {
