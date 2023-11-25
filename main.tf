@@ -125,6 +125,7 @@ locals {
       if try(c.value != "", false)
     }
   )
+  publicly_accessible = try(var.infrastructure.publicly_accessible, false)
 }
 
 resource "aws_db_parameter_group" "target" {
@@ -165,14 +166,14 @@ resource "aws_security_group" "target" {
 }
 
 resource "aws_security_group_rule" "target" {
-  security_group_id = aws_security_group.target.id
+  description = local.description
 
-  type        = "ingress"
-  protocol    = "tcp"
-  cidr_blocks = [data.aws_vpc.selected.cidr_block]
-  from_port   = 5432
-  to_port     = 5432
-  description = "Access PostgreSQL from VPC"
+  security_group_id = aws_security_group.target.id
+  type              = "ingress"
+  protocol          = "tcp"
+  cidr_blocks       = [data.aws_vpc.selected.cidr_block]
+  from_port         = 5432
+  to_port           = 5432
 }
 
 # create primary instance.
@@ -181,6 +182,7 @@ resource "aws_db_instance" "primary" {
   identifier = local.architecture == "replication" ? join("-", [local.fullname, "primary"]) : local.fullname
   tags       = local.tags
 
+  publicly_accessible    = local.publicly_accessible
   multi_az               = local.architecture == "replication"
   db_subnet_group_name   = aws_db_subnet_group.target.id
   vpc_security_group_ids = [aws_security_group.target.id]
@@ -217,11 +219,11 @@ resource "aws_db_instance" "primary" {
 resource "aws_db_instance" "secondary" {
   count = local.architecture == "replication" ? local.replication_readonly_replicas : 0
 
-
   identifier = join("-", [local.fullname, "secondary", tostring(count.index)])
   tags       = local.tags
 
   replicate_source_db    = aws_db_instance.primary.arn
+  publicly_accessible    = aws_db_instance.primary.publicly_accessible
   multi_az               = true
   db_subnet_group_name   = aws_db_instance.primary.db_subnet_group_name
   vpc_security_group_ids = aws_db_instance.primary.vpc_security_group_ids

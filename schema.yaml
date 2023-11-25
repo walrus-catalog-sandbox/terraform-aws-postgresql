@@ -34,6 +34,15 @@ components:
           required:
           - vpc_id
           properties:
+            publicly_accessible:
+              description: |
+                Specify whether to enable public access. If enabled, the PostgreSQL service can be accessed from the public network.
+              default: false
+              nullable: true
+              title: Publicly Accessible
+              type: boolean
+              x-walrus-ui:
+                order: 4
             domain_suffix:
               description: |
                 Specify the domain suffix of the CloudMap. The domain suffix must be a valid DNS name.
