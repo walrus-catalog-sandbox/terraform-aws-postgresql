@@ -11,6 +11,7 @@ locals {
   tags = {
     "Name" = join("-", [local.namespace, local.resource_name])
 
+    "walrus.seal.io/catalog-name"     = "terraform-aws-rds-postgresql"
     "walrus.seal.io/project-id"       = local.project_id
     "walrus.seal.io/environment-id"   = local.environment_id
     "walrus.seal.io/resource-id"      = local.resource_id
