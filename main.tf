@@ -34,7 +34,7 @@ data "aws_vpc" "selected" {
 
   lifecycle {
     postcondition {
-      condition     = try(var.infrastructure.domain_suffix == null, false) || (self.enable_dns_support && self.enable_dns_hostnames)
+      condition     = var.infrastructure.domain_suffix == null || (self.enable_dns_support && self.enable_dns_hostnames)
       error_message = "VPC needs to enable DNS support and DNS hostnames resolution"
     }
   }
@@ -68,7 +68,7 @@ data "aws_kms_key" "selected" {
 }
 
 data "aws_service_discovery_dns_namespace" "selected" {
-  count = try(var.infrastructure.domain_suffix != null, false) ? 1 : 0
+  count = var.infrastructure.domain_suffix != null ? 1 : 0
 
   name = var.infrastructure.domain_suffix
   type = "DNS_PRIVATE"
