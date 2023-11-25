@@ -9,6 +9,8 @@ locals {
   namespace = join("-", [local.project_name, local.environment_name])
 
   tags = {
+    "Name" = join("-", [local.namespace, local.resource_name])
+
     "walrus.seal.io/project-id"       = local.project_id
     "walrus.seal.io/environment-id"   = local.environment_id
     "walrus.seal.io/resource-id"      = local.resource_id
@@ -95,11 +97,12 @@ resource "random_string" "name_suffix" {
 }
 
 locals {
-  name     = join("-", [local.resource_name, random_string.name_suffix.result])
-  fullname = join("-", [local.namespace, local.name])
-  database = coalesce(var.database, "mydb")
-  username = coalesce(var.username, "rdsuser")
-  password = coalesce(var.password, random_password.password.result)
+  name        = join("-", [local.resource_name, random_string.name_suffix.result])
+  fullname    = join("-", [local.namespace, local.name])
+  description = "Created by Walrus catalog, and provisioned by Terraform."
+  database    = coalesce(var.database, "mydb")
+  username    = coalesce(var.username, "rdsuser")
+  password    = coalesce(var.password, random_password.password.result)
 
   replication_readonly_replicas = var.replication_readonly_replicas == 0 ? 1 : var.replication_readonly_replicas
 }
@@ -124,8 +127,10 @@ locals {
 }
 
 resource "aws_db_parameter_group" "target" {
-  name   = local.fullname
-  tags   = local.tags
+  name        = local.fullname
+  description = local.description
+  tags        = local.tags
+
   family = format("postgres%s", split(".", local.version)[0])
 
   dynamic "parameter" {
@@ -141,8 +146,9 @@ resource "aws_db_parameter_group" "target" {
 # create subnet group.
 
 resource "aws_db_subnet_group" "target" {
-  name = local.fullname
-  tags = local.tags
+  name        = local.fullname
+  description = local.description
+  tags        = local.tags
 
   subnet_ids = data.aws_subnets.selected.ids
 }
@@ -150,8 +156,9 @@ resource "aws_db_subnet_group" "target" {
 # create security group.
 
 resource "aws_security_group" "target" {
-  name = local.fullname
-  tags = local.tags
+  name        = local.fullname
+  description = local.description
+  tags        = local.tags
 
   vpc_id = data.aws_vpc.selected.id
 }
@@ -170,8 +177,9 @@ resource "aws_security_group_rule" "target" {
 # create primary instance.
 
 resource "aws_db_instance" "primary" {
-  identifier             = local.architecture == "replication" ? join("-", [local.fullname, "primary"]) : local.fullname
-  tags                   = local.tags
+  identifier = local.architecture == "replication" ? join("-", [local.fullname, "primary"]) : local.fullname
+  tags       = local.tags
+
   multi_az               = local.architecture == "replication"
   db_subnet_group_name   = aws_db_subnet_group.target.id
   vpc_security_group_ids = [aws_security_group.target.id]
@@ -208,10 +216,11 @@ resource "aws_db_instance" "primary" {
 resource "aws_db_instance" "secondary" {
   count = local.architecture == "replication" ? local.replication_readonly_replicas : 0
 
-  replicate_source_db = aws_db_instance.primary.arn
 
-  identifier             = join("-", [local.fullname, "secondary", tostring(count.index)])
-  tags                   = local.tags
+  identifier = join("-", [local.fullname, "secondary", tostring(count.index)])
+  tags       = local.tags
+
+  replicate_source_db    = aws_db_instance.primary.arn
   multi_az               = true
   db_subnet_group_name   = aws_db_instance.primary.db_subnet_group_name
   vpc_security_group_ids = aws_db_instance.primary.vpc_security_group_ids
@@ -238,10 +247,9 @@ resource "aws_db_instance" "secondary" {
 resource "aws_service_discovery_service" "primary" {
   count = var.infrastructure.domain_suffix != null ? 1 : 0
 
-  name = format("%s.%s", (local.architecture == "replication" ? join("-", [
-    local.name, "primary"
-  ]) : local.name), local.namespace)
-  force_destroy = true
+  name        = format("%s.%s", (local.architecture == "replication" ? join("-", [local.name, "primary"]) : local.name), local.namespace)
+  description = local.description
+  tags        = local.tags
 
   dns_config {
     namespace_id   = data.aws_service_discovery_dns_namespace.selected[0].id
@@ -251,6 +259,8 @@ resource "aws_service_discovery_service" "primary" {
       type = "CNAME"
     }
   }
+
+  force_destroy = true
 }
 
 resource "aws_service_discovery_instance" "primay" {
@@ -267,8 +277,9 @@ resource "aws_service_discovery_instance" "primay" {
 resource "aws_service_discovery_service" "secondary" {
   count = var.infrastructure.domain_suffix != null && local.architecture == "replication" ? 1 : 0
 
-  name          = format("%s.%s", join("-", [local.name, "secondary"]), local.namespace)
-  force_destroy = true
+  name        = format("%s.%s", join("-", [local.name, "secondary"]), local.namespace)
+  description = local.description
+  tags        = local.tags
 
   dns_config {
     namespace_id   = data.aws_service_discovery_dns_namespace.selected[0].id
@@ -278,6 +289,8 @@ resource "aws_service_discovery_service" "secondary" {
       type = "CNAME"
     }
   }
+
+  force_destroy = true
 }
 
 resource "aws_service_discovery_instance" "secondary" {
