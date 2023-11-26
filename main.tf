@@ -171,7 +171,7 @@ resource "aws_security_group_rule" "target" {
   security_group_id = aws_security_group.target.id
   type              = "ingress"
   protocol          = "tcp"
-  cidr_blocks       = [data.aws_vpc.selected.cidr_block]
+  cidr_blocks       = local.publicly_accessible ? ["0.0.0.0/0", data.aws_vpc.selected.cidr_block] : [data.aws_vpc.selected.cidr_block]
   from_port         = 5432
   to_port           = 5432
 }
