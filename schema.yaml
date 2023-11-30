@@ -223,7 +223,7 @@ components:
               nullable: true
               title: Size(MiB)
               type: number
-              minimum: 10240
+              minimum: 20480
               x-walrus-ui:
                 order: 2
           x-walrus-ui:
