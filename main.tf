@@ -136,7 +136,7 @@ resource "aws_db_parameter_group" "target" {
   family = format("postgres%s", split(".", local.version)[0])
 
   dynamic "parameter" {
-    for_each = local.parameters
+    for_each = try(nonsensitive(local.parameters), local.parameters)
     content {
       name         = parameter.key
       value        = parameter.value
