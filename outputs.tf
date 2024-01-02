@@ -88,15 +88,3 @@ output "password" {
   value       = local.password
   sensitive   = true
 }
-
-## UI display
-
-output "endpoints" {
-  description = "The endpoints, a list of string combined host and port."
-  value       = local.endpoints
-}
-
-output "endpoints_readonly" {
-  description = "The readonly endpoints, a list of string combined host and port."
-  value       = local.endpoints_readonly
-}
