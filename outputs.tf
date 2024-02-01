@@ -9,7 +9,7 @@ locals {
   hosts_readonly = local.architecture == "replication" ? flatten([
     var.infrastructure.domain_suffix == null ?
     aws_db_instance.secondary[*].address :
-    format("%s.%s", aws_service_discovery_service.secondary[0].name, var.infrastructure.domain_suffix)
+    [format("%s.%s", aws_service_discovery_service.secondary[0].name, var.infrastructure.domain_suffix)]
   ]) : []
 
   endpoints = [
