@@ -82,9 +82,9 @@ variable "engine_version" {
 Specify the deployment engine version, select from https://docs.aws.amazon.com/AmazonRDS/latest/PostgreSQLReleaseNotes/postgresql-release-calendar.html#Release.Calendar.
 EOF
   type        = string
-  default     = "15.0"
+  default     = "16.0"
   validation {
-    condition     = var.engine_version == "" || contains(["15.0", "14.0", "13.0"], var.engine_version)
+    condition     = var.engine_version == "" || contains(["16.0", "15.0", "14.0", "13.0"], var.engine_version)
     error_message = "Invalid version"
   }
 }
