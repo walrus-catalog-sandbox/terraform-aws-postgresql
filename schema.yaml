@@ -80,8 +80,9 @@ components:
           type: string
           description: |
             Specify the deployment engine version, select from https://docs.aws.amazon.com/AmazonRDS/latest/PostgreSQLReleaseNotes/postgresql-release-calendar.html#Release.Calendar.
-          default: "15.0"
+          default: "16.0"
           enum:
+          - "16.0"
           - "15.0"
           - "14.0"
           - "13.0"
