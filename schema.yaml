@@ -5,16 +5,14 @@ components:
   schemas:
     variables:
       type: object
-      required:
-      - infrastructure
       properties:
         infrastructure:
           title: Infrastructure
           type: object
           description: |
             Specify the infrastructure information for deploying.
-          required:
-          - vpc_id
+          default:
+            publicly_accessible: false
           properties:
             domain_suffix:
               description: |
@@ -40,7 +38,7 @@ components:
                 order: 4
             vpc_id:
               description: |
-                Specify the ID of the VPC where the PostgreSQL service applies.
+                Specify the ID of the VPC where the PostgreSQL service applies. If not specified, a new VPC will be created.
               title: Vpc Id
               type: string
               x-walrus-ui:

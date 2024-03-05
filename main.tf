@@ -23,12 +23,47 @@ locals {
   architecture = coalesce(var.architecture, "standalone")
 }
 
+# create vpc.
+
+resource "aws_vpc" "default" {
+  count = var.infrastructure.vpc_id == null ? 1 : 0
+
+  instance_tenancy     = "default"
+  enable_dns_hostnames = true
+  enable_dns_support   = true
+  cidr_block           = "10.0.0.0/16"
+}
+
+
+data "aws_availability_zones" "selected" {
+  count = var.infrastructure.vpc_id == null ? 1 : 0
+
+  state = "available"
+
+  lifecycle {
+    postcondition {
+      condition     = length(self.names) > 0
+      error_message = "Failed to get Avaialbe Zones"
+    }
+  }
+}
+
+resource "aws_subnet" "default" {
+  for_each = var.infrastructure.vpc_id == null ? {
+    for k, v in data.aws_availability_zones.selected[0].names : v => cidrsubnet(aws_vpc.default[0].cidr_block, 8, k)
+  } : {}
+
+  vpc_id            = aws_vpc.default[0].id
+  availability_zone = each.key
+  cidr_block        = each.value
+}
+
 #
 # Ensure
 #
 
 data "aws_vpc" "selected" {
-  id = var.infrastructure.vpc_id
+  id = var.infrastructure.vpc_id != null ? var.infrastructure.vpc_id : aws_vpc.default[0].id
 
   state = "available"
 
