@@ -35,18 +35,21 @@ Specify the infrastructure information for deploying.
 Examples:
 ```
 infrastructure:
-  vpc_id: string                   # the ID of the VPC where the PostgreSQL service applies
+  vpc_id: string, optional         # the ID of the VPC where the PostgreSQL service applies
   kms_key_id: string, optional     # the ID of the KMS key which to encrypt the PostgreSQL data
   domain_suffix: string, optional  # a private DNS namespace of the CloudMap where to register the applied PostgreSQL service
-  publicly_accessible: bool       # whether the PostgreSQL service is publicly accessible
+  publicly_accessible: bool        # whether the PostgreSQL service is publicly accessible
 ```
 EOF
   type = object({
-    vpc_id              = string
+    vpc_id              = optional(string)
     kms_key_id          = optional(string)
     domain_suffix       = optional(string)
     publicly_accessible = optional(bool, false)
   })
+  default = {
+    publicly_accessible = false
+  }
 }
 
 #

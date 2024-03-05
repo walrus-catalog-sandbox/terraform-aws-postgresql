@@ -3,11 +3,6 @@
 Deploy PostgreSQL service in replication architecture by root moudle.
 
 ```bash
-# setup infra
-$ tf apply -auto-approve \
-  -target=aws_vpc.example \
-  -target=aws_subnet.example
-
 # create service
 $ tf apply -auto-approve
 ```
@@ -23,9 +18,7 @@ $ tf apply -auto-approve
 
 ## Providers
 
-| Name | Version |
-|------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.24.0 |
+No providers.
 
 ## Modules
 
@@ -35,11 +28,7 @@ $ tf apply -auto-approve
 
 ## Resources
 
-| Name | Type |
-|------|------|
-| [aws_subnet.example](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet) | resource |
-| [aws_vpc.example](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc) | resource |
-| [aws_availability_zones.selected](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
+No resources.
 
 ## Inputs
 
