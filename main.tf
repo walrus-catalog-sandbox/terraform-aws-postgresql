@@ -134,7 +134,7 @@ resource "random_string" "name_suffix" {
 
 locals {
   name        = join("-", [local.resource_name, random_string.name_suffix.result])
-  fullname    = join("-", [local.namespace, local.name])
+  fullname    = format("walrus-%s", md5(join("-", [local.namespace, local.name])))
   description = "Created by Walrus catalog, and provisioned by Terraform."
   database    = coalesce(var.database, "mydb")
   username    = coalesce(var.username, "rdsuser")
